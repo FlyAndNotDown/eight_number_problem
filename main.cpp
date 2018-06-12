@@ -37,10 +37,15 @@ int main() {
         Node *move = open.front();
         open.pop_front();
 
-        // 如果搜索深度超过了 50，则跳出并判断失败
+        // 如果搜索深度超过了设定值，则跳出并判断失败
+        bool jump = false;
         for (Node *node : open) {
-            if (node->getDepth() > 20) break;
+            if (node->getDepth() > 18) {
+                jump = true;
+                break;
+            }
         }
+        if (jump) break;
 
         // 将其移入closed表
         closed.push_back(move);
@@ -52,10 +57,22 @@ int main() {
         }
 
         // 将节点扩展并且加入open表
-        if (move->topExtendable()) open.push_back(move->topExtend());
-        if (move->bottomExtendable()) open.push_back(move->bottomExtend());
-        if (move->leftExtendable()) open.push_back(move->leftExtend());
-        if (move->rightExtendable()) open.push_back(move->rightExtend());
+        if (move->topExtendable()) {
+            Node *ex = move->topExtend();
+            if (!ex->inList(&open) && !ex->inList(&closed)) open.push_back(ex);
+        }
+        if (move->bottomExtendable()) {
+            Node *ex = move->bottomExtend();
+            if (!ex->inList(&open) && !ex->inList(&closed)) open.push_back(ex);
+        }
+        if (move->leftExtendable()) {
+            Node *ex = move->leftExtend();
+            if (!ex->inList(&open) && !ex->inList(&closed)) open.push_back(ex);
+        }
+        if (move->rightExtendable()) {
+            Node *ex = move->rightExtend();
+            if (!ex->inList(&open) && !ex->inList(&closed)) open.push_back(ex);
+        }
 
         // 将open表排序
         open.sort([=](Node *a, Node *b) -> bool {
@@ -64,15 +81,25 @@ int main() {
     }
 
     if (success) {
-        int count = -1;
-        Node *result = closed.back();
+        // 统计步骤数量并输出结果
+        int count = 0;
+        Node* result = closed.back();
+        list<Node *> l;
         while (result) {
+            l.push_back(result);
             count++;
             result = result->getParent();
         }
-        cout << "搜索成功!" << endl << "步骤数: " << count << endl;
+        cout << "搜索成功!" << endl << "步骤数(加上起止): " << count << endl;
+        cout << "详细步骤: " << endl;
+        while (!l.empty()) {
+            Node* front = l.back();
+            l.pop_back();
+            for (int i = 0; i < 9; i++) cout << front->getArea()[i] << " ";
+            cout << endl;
+        }
     } else {
-        cout << "搜索失败!" << endl;
+        cout << "搜索失败!在指定搜索深度内没能完成搜索!" << endl;
     }
 
     return 0;

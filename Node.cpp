@@ -135,3 +135,14 @@ int Node::evaluation(Node *endNode) {
     }
     return this->depth + n;
 }
+
+bool Node::inList(list<Node *> *l) {
+    bool find = false;
+    for (Node *node: *l) {
+        if (this->equal(node)) {
+            find = true;
+            break;
+        }
+    }
+    return find;
+}

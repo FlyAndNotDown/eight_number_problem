@@ -4,6 +4,8 @@
 
 #ifndef EIGHT_NUMBER_PROBLEM_NODE_H
 #define EIGHT_NUMBER_PROBLEM_NODE_H
+#include <list>
+using namespace std;
 
 
 class Node {
@@ -44,6 +46,9 @@ public:
 
     // 估价函数
     int evaluation(Node*);
+
+    // 是否在列表中
+    bool inList(list<Node*>*);
 };
 
 
